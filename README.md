@@ -2,7 +2,7 @@
 
 ## Start Zookeeper 
 1. $ cd <PATH_TO_KAFKA>/kafka_2.13-2.7.0
-2. $ bin/zookeeper-server-start/zookeeper.properties
+2. $ bin/zookeeper-server-start.sh config/zookeeper.properties
 
 ## Start Kafka
 3. $ cd <PATH_TO_KAFKA>/kafka_2.13-2.7.0
