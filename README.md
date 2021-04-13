@@ -8,7 +8,7 @@
 3. $ cd <PATH_TO_KAFKA>/kafka_2.13-2.7.0
 4. $ bin/kafka-server-start.sh config/server.properties
 
-# Create Kafka Topic from Twitter and Save Logs 
+## Create Kafka Topic from Twitter and Save Logs 
 $ cd <PATH_TO_FILE>
 $ python StreamProducer.py (Topic name as console parameter, saves all keys)
 
