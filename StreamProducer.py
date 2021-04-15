@@ -1,5 +1,4 @@
 from kafka import KafkaProducer
-import kafka
 import json
 import tweepy
 from tweepy import OAuthHandler
@@ -35,7 +34,8 @@ class KafkaPushListener(StreamListener):
         # Data comes from Twitter
         self.producer.send("topic_" + hashtag, data.encode('utf-8'))
         #self.producer.send("twitter_stream_" + hashtag, data.encode('utf-8'))
-        print(data)
+        parsed = json.loads(data)
+        print(json.dumps(parsed, indent=4, sort_keys=True))
         return True
 
     def on_error(self, status):
