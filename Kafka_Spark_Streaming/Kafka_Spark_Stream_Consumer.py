@@ -4,6 +4,8 @@ from pyspark.sql import *
 from pyspark.sql.functions import explode
 from pyspark.sql.functions import split
 #
+import os
+os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-streaming-kafka-0-8_2.11:2.0.2 pyspark-shell'
 import json
 
 if __name__ == '__main__':
