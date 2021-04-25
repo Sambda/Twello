@@ -6,8 +6,9 @@ global:
 # A scrape configuration containing exactly one endpoint to scrape:
 scrape_configs:
   - job_name: 'kafka-producer'
+    metrics_path: ''
     static_configs:
-      - targets: ['localhost:8000']
+      - targets: ['host.docker.internal:8000']
   - job_name: kafka-jmx-metrics
     static_configs:
-       - targets: ['localhost:7071']
+       - targets: ['host.docker.internal:7071']
