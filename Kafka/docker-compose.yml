@@ -12,14 +12,24 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
-      - "7071:7071"
+      - "1099:1099"
     depends_on:
       - "zookeeper"
     environment:
       KAFKA_ADVERTISED_HOST_NAME: localhost
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=7071"
-      JMX_PORT: 7071
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=1099"
+      JMX_PORT: 1099
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  jmx-exporter:
+    image: sscaling/jmx-prometheus-exporter
+    container_name: jmx-exporter
+    ports:
+      - "5556:5556"
+    volumes:
+      - ./jmx-exporter/config.yml:/opt/jmx_exporter/config.yml
+    environment:
+      SERVICE_PORT: 5556

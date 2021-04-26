@@ -1,16 +1,6 @@
 version: "3.3"
 services:
 
-  jmx-exporter:
-    image: sscaling/jmx-prometheus-exporter
-    container_name: jmx-exporter
-    ports:
-      - "5556:5556"
-    volumes:
-      - ./jmx-exporter/config.yml:/opt/jmx_exporter/config.yml
-    environment:
-      SERVICE_PORT: 5556
-
   prometheus:
     image: prom/prometheus
     container_name: prometheus
