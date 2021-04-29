@@ -26,13 +26,13 @@ Thats it, you are rdy to go!
 
 Setup a python environment of your choice, activate it and install the required packages with 
 
-1. Create pip or conda enviroment. \
+1. Create conda enviroment. \
    `$ conda create --name twello python`
 2. Activate conda enviroment. \
    `$ conda activate twello` 
 3. Clone git Repository. \
    `$ git checkout <path_to_desired_location>/https://github.com/Sambda/Twello.git`
-4. Install requirements. \
+4. Install pip requirements. \
    `$ pip install -r ./requirements.txt`
 
 ### Start Producer

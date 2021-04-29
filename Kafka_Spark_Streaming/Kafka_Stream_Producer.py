@@ -4,7 +4,7 @@ import tweepy
 from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy.streaming import StreamListener
-from prometheus_client import start_http_server, Counter
+from prometheus_client import start_http_server, Counter, Gauge
 
 # Console Input for the wanted hashtag
 hashtag = input("Enter the hashtag : ")
@@ -23,6 +23,7 @@ api = tweepy.API(auth)
 
 #Prometheus
 tweet_counter = Counter("received_tweets", "Counts all received Tweets of this producer")
+compression_rate_gauge = Gauge("compression_rate", "some info")
 
 # Twitter Stream Listener
 class KafkaPushListener(StreamListener):
@@ -44,7 +45,9 @@ class KafkaPushListener(StreamListener):
 
         #Metric Stuff
         tweet_counter.inc()
+        print(self.producer.metrics())
         print("Compression Rate: ", self.producer.metrics()["producer-metrics"]["compression-rate-avg"])
+        compression_rate_gauge.set(self.producer.metrics()["producer-metrics"]["compression-rate-avg"])
         print("Response Rate: ", self.producer.metrics()["producer-metrics"]["response-rate"])
         print("Request Rate: ", self.producer.metrics()["producer-metrics"]["request-rate"])
         print("request-latency-avg: ", self.producer.metrics()["producer-metrics"]["request-latency-avg"])
