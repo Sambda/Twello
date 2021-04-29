@@ -33,3 +33,9 @@ services:
       - ./jmx-exporter/config.yml:/opt/jmx_exporter/config.yml
     environment:
       SERVICE_PORT: 5556
+
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:latest
+    container_name: kafka-exporter
+    ports:
+      - "9308:9308"
