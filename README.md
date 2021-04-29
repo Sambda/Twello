@@ -30,9 +30,11 @@ Setup a python environment of your choice, activate it and install the required 
 
 ### Start Producer
 
+python <path_to_file>/Kafka-Stream-Producer.py
+
 ### Start Example Consumer
 
-
+python <path_to_file>/Kafka-Stream-Consumer.py
 
 
 
