@@ -1,0 +1,13 @@
+# Includes all required python packages
+# Kafka
+kafka-python==2.0.2
+# Prometheus
+prometheus-client==0.10.1
+prometheus-kafka-metrics==0.4
+# PySpark
+PySocks==1.7.1
+pyspark==3.1.1
+spark==0.2.1
+textblob==0.15.3
+# Twitter Streaming API
+tweepy==3.10.0
