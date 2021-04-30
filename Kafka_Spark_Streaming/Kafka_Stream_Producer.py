@@ -7,7 +7,8 @@ from tweepy.streaming import StreamListener
 from prometheus_client import start_http_server, Counter, Gauge
 
 # Console Input for the wanted hashtag
-hashtag = input("Enter the hashtag : ")
+#hashtag = input("Enter the hashtag : ")
+hashtag = "bigdata"
 print("Created Topic name: topic_{}".format(hashtag))
 
 # TWITTER API CONFIGURATIONS
@@ -22,8 +23,13 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 #Prometheus
-tweet_counter = Counter("received_tweets", "Counts all received Tweets of this producer")
-compression_rate_gauge = Gauge("compression_rate", "some info")
+#tweet_counter = Counter("received_tweets", "Counts all received Tweets of this producer")
+#user_counter = Counter("user", "User all received Tweets of this producer")
+compression_rate_avg_gauge = Gauge("compression_rate_avg", "compression")
+request_latency_avg_gauge = Gauge("request_latency_avg", "latency")
+batch_size_avg_gauge = Gauge("batch_size_avg", "batch_size_avg")
+batch_size_max_gauge = Gauge("batch_size_max", "batch_size_max")
+
 
 # Twitter Stream Listener
 class KafkaPushListener(StreamListener):
@@ -44,15 +50,13 @@ class KafkaPushListener(StreamListener):
         #print(json.dumps(parsed, indent=4, sort_keys=True))
 
         #Metric Stuff
-        tweet_counter.inc()
+        #tweet_counter.inc()
+
         print(self.producer.metrics())
-        print("Compression Rate: ", self.producer.metrics()["producer-metrics"]["compression-rate-avg"])
-        compression_rate_gauge.set(self.producer.metrics()["producer-metrics"]["compression-rate-avg"])
-        print("Response Rate: ", self.producer.metrics()["producer-metrics"]["response-rate"])
-        print("Request Rate: ", self.producer.metrics()["producer-metrics"]["request-rate"])
-        print("request-latency-avg: ", self.producer.metrics()["producer-metrics"]["request-latency-avg"])
-        print("io-wait-time-ns-avg: ", self.producer.metrics()["producer-metrics"]["io-wait-time-ns-avg"])
-        print("batch size avg: ", self.producer.metrics()["producer-metrics"]["batch-size-avg"])
+        compression_rate_avg_gauge.set(self.producer.metrics()["producer-metrics"]["compression-rate-avg"])
+        request_latency_avg_gauge.set(self.producer.metrics()["producer-metrics"]["request-latency-avg"])
+        batch_size_avg_gauge.set(self.producer.metrics()["producer-metrics"]["batch-size-avg"])
+        batch_size_max_gauge.set(self.producer.metrics()["producer-metrics"]["batch-size-max"])
 
         return True
 
@@ -67,4 +71,5 @@ twitter_stream = Stream(auth, KafkaPushListener())
 hashStr = "#"+ hashtag
 
 # Produce Data that has trump hashtag (Tweets)
+#twitter_stream.filter(locations=[-180, -90, 180, 90])
 twitter_stream.filter(track=[hashStr])
