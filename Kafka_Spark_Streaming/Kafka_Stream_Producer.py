@@ -53,9 +53,9 @@ class KafkaPushListener(StreamListener):
 
 def determinate_topic(data):
     topics = []
-    for tag in hashtags:
-        if tag in data.lower():
-            topics.append(tag.replace("#", ""))
+    for keyword in keywords:
+        if keyword in data.lower():
+            topics.append(keyword)
     return topics
 
 
@@ -77,7 +77,6 @@ if __name__ == '__main__':
     producer_keywords = input(
         "Enter Keywords to Track in Twitter API - those Keywords are the created topics (seperated by ','): ")
     keywords = producer_keywords.lower().replace(" ", "").split(",")
-    hashtags = ['#{}'.format(keyword) for keyword in keywords]
 
     # TWITTER API AUTH
     auth = OAuthHandler(api_key, api_secret)
@@ -88,4 +87,4 @@ if __name__ == '__main__':
     twitter_stream = Stream(auth, KafkaPushListener())
 
     # Filter the Twitter stream
-    twitter_stream.filter(track=hashtags)
+    twitter_stream.filter(track=keywords)
