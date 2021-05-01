@@ -16,10 +16,11 @@ services:
     depends_on:
       - "zookeeper"
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: localhost
-      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      
       KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka -Dcom.sun.management.jmxremote.rmi.port=1099"
       JMX_PORT: 1099
     volumes:
@@ -31,7 +32,7 @@ services:
     ports:
       - "5556:5556"
     depends_on:
-      - "kafka"
+      - kafka
     volumes:
       - ./jmx-exporter/config.yml:/opt/jmx_exporter/config.yml
     environment:
@@ -40,7 +41,8 @@ services:
   kafka-exporter:
     image: danielqsj/kafka-exporter:latest
     container_name: kafka-exporter
+    command: --kafka.server=kafka:29092 --kafka.version=2.7.0
     depends_on:
-      - "kafka"
+      - kafka
     ports:
       - "9308:9308"
