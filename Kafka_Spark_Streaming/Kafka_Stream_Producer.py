@@ -1,7 +1,9 @@
-from kafka import KafkaProducer
+from kafka import KafkaProducer, KafkaAdminClient
+from kafka.admin import NewTopic
 import tweepy
 from tweepy import OAuthHandler
 from tweepy import Stream
+import re
 from tweepy.streaming import StreamListener
 from prometheus_client import start_http_server, Counter, Gauge
 
@@ -37,11 +39,11 @@ class KafkaPushListener(StreamListener):
         # print(json.dumps(data_json['text'], indent=4, sort_keys=True))
         # print(json.dumps(data_json['entities']['hashtags'], indent=4, sort_keys=True))
 
-        topics = determinate_topic(data)
+        send_topics = determinate_topic(data)
 
         # Send data to topic
-        for topic in topics:
-            self.producer.send("topic_" + topic, data.encode('utf-8'))
+        for send_topic in send_topics:
+            self.producer.send("topic_" + send_topic, data.encode('utf-8'))
 
         handle_metrics(self.producer.metrics(), topics)
         return True
@@ -52,11 +54,11 @@ class KafkaPushListener(StreamListener):
 
 
 def determinate_topic(data):
-    topics = []
-    for keyword in keywords:
-        if keyword in data.lower():
-            topics.append(keyword)
-    return topics
+    send_topics = []
+    for topic in topics:
+        if topic in data.lower():
+            send_topics.append(topic)
+    return send_topics
 
 
 def handle_metrics(metrics, topics):
@@ -73,12 +75,20 @@ if __name__ == '__main__':
     # Startup Metrics Endpoint
     start_http_server(8000)
 
+    kafka_admin = KafkaAdminClient(bootstrap_servers=['localhost:9092'])
     # Get topic from console input
     producer_keywords = input(
         "Enter Keywords to Track in Twitter API - those Keywords are the created topics (seperated by ','): ")
+    topics = re.sub("[^a-zA-Z,1-9]+", "", str(producer_keywords)).lower().split(",")
     keywords = producer_keywords.lower().replace(" ", "").split(",")
+    #Input number of partitions
+    num_partitions = input("Put in the number of partitions per topic:")
     # TODO only letters in topic
     print('search for Keywords: ', keywords)
+    topic_list = []
+    for topic in topics:
+        topic_list.append(NewTopic(name="topic_" + topic, num_partitions=int(num_partitions), replication_factor=1))
+    kafka_admin.create_topics(new_topics=topic_list, validate_only=False)
     # TWITTER API AUTH
     auth = OAuthHandler(api_key, api_secret)
     auth.set_access_token(access_token, access_token_secret)
