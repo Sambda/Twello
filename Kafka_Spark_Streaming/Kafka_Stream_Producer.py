@@ -87,22 +87,17 @@ if __name__ == '__main__':
     # TODO only letters in topic
     print('search for Keywords: ', keywords)
     topic_list = []
-    topic_list_to_update = []
-    partitions_list_to_update = []
+    topic_partitions = {}
     topics_existing = kafka_admin.list_topics()
     for topic in topics:
         if "topic_"+topic not in topics_existing:
             topic_list.append(NewTopic(name="topic_" + topic, num_partitions=int(num_partitions), replication_factor=1))
         else:
-            partitions = NewPartitions(int(num_partitions), int(num_partitions))
-            topic_list_to_update.append("topic_"+ topic)
-            partitions_list_to_update.append(partitions)
+            partitions = NewPartitions(total_count=int(num_partitions))
+            topic_partitions["topic_"+topic] = partitions
 
     kafka_admin.create_topics(new_topics=topic_list, validate_only=False)
-
-    # UPDATE Partitions
-    print(dict(zip(topic_list_to_update, partitions_list_to_update)))
-    #kafka_admin.create_partitions(dict(zip(topic_list_to_update, partitions_list_to_update)))
+    kafka_admin.create_partitions(topic_partitions)
     # TWITTER API AUTH
     auth = OAuthHandler(api_key, api_secret)
     auth.set_access_token(access_token, access_token_secret)
