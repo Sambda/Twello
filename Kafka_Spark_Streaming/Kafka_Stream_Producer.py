@@ -77,7 +77,8 @@ if __name__ == '__main__':
     producer_keywords = input(
         "Enter Keywords to Track in Twitter API - those Keywords are the created topics (seperated by ','): ")
     keywords = producer_keywords.lower().replace(" ", "").split(",")
-
+    # TODO only letters in topic
+    print('search for Keywords: ', keywords)
     # TWITTER API AUTH
     auth = OAuthHandler(api_key, api_secret)
     auth.set_access_token(access_token, access_token_secret)
