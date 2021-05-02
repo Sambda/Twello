@@ -19,13 +19,75 @@
   "links": [],
   "panels": [
     {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 14,
+        "y": 0
+      },
+      "id": 10,
+      "links": [],
+      "options": {
+        "fieldOptions": {
+          "calcs": [
+            "max"
+          ],
+          "defaults": {
+            "mappings": [
+              {
+                "id": 0,
+                "op": "=",
+                "text": "N/A",
+                "type": 1,
+                "value": "null"
+              }
+            ],
+            "max": 100,
+            "min": 0,
+            "nullValueMode": "connected",
+            "thresholds": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ],
+            "unit": "ms"
+          },
+          "override": {},
+          "values": false
+        },
+        "orientation": "horizontal",
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "6.5.1",
+      "targets": [
+        {
+          "expr": "kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.95\", request=\"FetchConsumer\"}",
+          "format": "time_series",
+          "legendFormat": "Produce Reqeust",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Fetch Consumer",
+      "type": "gauge"
+    },
+    {
       "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 4
       },
       "id": 18,
       "panels": [],
@@ -58,7 +120,7 @@
         "h": 3,
         "w": 5,
         "x": 0,
-        "y": 1
+        "y": 5
       },
       "id": 2,
       "interval": null,
@@ -144,7 +206,7 @@
         "h": 3,
         "w": 5,
         "x": 5,
-        "y": 1
+        "y": 5
       },
       "id": 4,
       "interval": null,
@@ -227,7 +289,7 @@
         "h": 3,
         "w": 4,
         "x": 10,
-        "y": 1
+        "y": 5
       },
       "id": 14,
       "interval": null,
@@ -295,9 +357,9 @@
         "h": 4,
         "w": 4,
         "x": 14,
-        "y": 1
+        "y": 5
       },
-      "id": 10,
+      "id": 11,
       "links": [],
       "options": {
         "fieldOptions": {
@@ -339,7 +401,7 @@
       "pluginVersion": "6.5.1",
       "targets": [
         {
-          "expr": "kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.95\", request=\"FetchConsumer\"}",
+          "expr": "kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.95\", request=\"Produce\"}",
           "format": "time_series",
           "legendFormat": "Produce Reqeust",
           "refId": "B"
@@ -347,7 +409,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Fetch Consumer",
+      "title": "Produce",
       "type": "gauge"
     },
     {
@@ -362,7 +424,7 @@
         "h": 8,
         "w": 14,
         "x": 0,
-        "y": 4
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 6,
@@ -450,68 +512,6 @@
       "cacheTimeout": null,
       "datasource": "Prometheus",
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 14,
-        "y": 5
-      },
-      "id": 11,
-      "links": [],
-      "options": {
-        "fieldOptions": {
-          "calcs": [
-            "max"
-          ],
-          "defaults": {
-            "mappings": [
-              {
-                "id": 0,
-                "op": "=",
-                "text": "N/A",
-                "type": 1,
-                "value": "null"
-              }
-            ],
-            "max": 100,
-            "min": 0,
-            "nullValueMode": "connected",
-            "thresholds": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ],
-            "unit": "ms"
-          },
-          "override": {},
-          "values": false
-        },
-        "orientation": "horizontal",
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true
-      },
-      "pluginVersion": "6.5.1",
-      "targets": [
-        {
-          "expr": "kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.95\", request=\"Produce\"}",
-          "format": "time_series",
-          "legendFormat": "Produce Reqeust",
-          "refId": "B"
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Produce",
-      "type": "gauge"
-    },
-    {
-      "cacheTimeout": null,
-      "datasource": "Prometheus",
-      "gridPos": {
         "h": 3,
         "w": 4,
         "x": 14,
@@ -582,7 +582,7 @@
         "h": 9,
         "w": 18,
         "x": 0,
-        "y": 12
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 16,
@@ -676,10 +676,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 7,
-        "w": 20,
+        "h": 9,
+        "w": 23,
         "x": 0,
-        "y": 21
+        "y": 25
       },
       "hiddenSeries": false,
       "id": 46,
@@ -689,7 +689,7 @@
         "current": true,
         "max": false,
         "min": false,
-        "rightSide": true,
+        "rightSide": false,
         "show": true,
         "sideWidth": 420,
         "total": false,
@@ -761,13 +761,105 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Prometheus",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 23,
+        "x": 0,
+        "y": 34
+      },
+      "hiddenSeries": false,
+      "id": 48,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "dataLinks": []
+      },
+      "percentage": false,
+      "pluginVersion": "6.5.1",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "kafka_topic_partition_replicas",
+          "format": "time_series",
+          "legendFormat": "{{topic}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Replicas per topic",
+      "tooltip": {
+        "shared": false,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": true,
+        "values": [
+          "current"
+        ]
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 41
       },
       "id": 22,
       "panels": [],
@@ -786,7 +878,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 29
+        "y": 42
       },
       "hiddenSeries": false,
       "id": 42,
@@ -876,7 +968,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 29
+        "y": 42
       },
       "hiddenSeries": false,
       "id": 28,
@@ -963,7 +1055,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 29
+        "y": 42
       },
       "hiddenSeries": false,
       "id": 30,
@@ -1050,7 +1142,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 34
+        "y": 47
       },
       "hiddenSeries": false,
       "id": 26,
@@ -1132,7 +1224,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 52
       },
       "id": 20,
       "panels": [],
@@ -1151,7 +1243,7 @@
         "h": 5,
         "w": 7,
         "x": 0,
-        "y": 40
+        "y": 53
       },
       "hiddenSeries": false,
       "id": 34,
@@ -1237,7 +1329,7 @@
         "h": 5,
         "w": 7,
         "x": 7,
-        "y": 40
+        "y": 53
       },
       "hiddenSeries": false,
       "id": 36,
@@ -1324,7 +1416,7 @@
         "h": 5,
         "w": 7,
         "x": 14,
-        "y": 40
+        "y": 53
       },
       "hiddenSeries": false,
       "id": 32,
@@ -1410,7 +1502,7 @@
         "h": 10,
         "w": 10,
         "x": 0,
-        "y": 45
+        "y": 58
       },
       "hiddenSeries": false,
       "id": 40,
@@ -1501,7 +1593,7 @@
         "h": 10,
         "w": 10,
         "x": 10,
-        "y": 45
+        "y": 58
       },
       "hiddenSeries": false,
       "id": 44,

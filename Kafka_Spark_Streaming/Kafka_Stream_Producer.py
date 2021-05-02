@@ -91,7 +91,7 @@ if __name__ == '__main__':
     topics_existing = kafka_admin.list_topics()
     for topic in topics:
         if "topic_"+topic not in topics_existing:
-            topic_list.append(NewTopic(name="topic_" + topic, num_partitions=int(num_partitions), replication_factor=1))
+            topic_list.append(NewTopic(name="topic_" + topic, num_partitions=int(num_partitions), replication_factor=2))
         else:
             partitions = NewPartitions(total_count=int(num_partitions))
             topic_partitions["topic_"+topic] = partitions
