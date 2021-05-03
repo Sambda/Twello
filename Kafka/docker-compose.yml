@@ -45,6 +45,62 @@ services:
     volumes:
       - /var/run/docker2.sock:/var/run/docker.sock
 
+  kafka3:
+    image: wurstmeister/kafka
+    container_name: kafka3
+    ports:
+      - "9094:9094"
+      - "1097:1097"
+    depends_on:
+      - "zookeeper"
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://kafka3:29094,PLAINTEXT_HOST://kafka3:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:29094,PLAINTEXT_HOST://localhost:9094
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka3 -Dcom.sun.management.jmxremote.rmi.port=1097"
+      JMX_PORT: 1097
+    volumes:
+      - /var/run/docker2.sock:/var/run/docker.sock
+
+  kafka4:
+    image: wurstmeister/kafka
+    container_name: kafka4
+    ports:
+      - "9095:9095"
+      - "1096:1096"
+    depends_on:
+      - "zookeeper"
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://kafka4:29095,PLAINTEXT_HOST://kafka4:9095
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka4:29095,PLAINTEXT_HOST://localhost:9095
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka4 -Dcom.sun.management.jmxremote.rmi.port=1096"
+      JMX_PORT: 1096
+    volumes:
+      - /var/run/docker2.sock:/var/run/docker.sock
+  kafka5:
+    image: wurstmeister/kafka
+    container_name: kafka5
+    ports:
+      - "9096:9096"
+      - "1095:1095"
+    depends_on:
+      - "zookeeper"
+    environment:
+      KAFKA_LISTENERS: PLAINTEXT://kafka5:29096,PLAINTEXT_HOST://kafka5:9096
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka5:29096,PLAINTEXT_HOST://localhost:9096
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kafka5 -Dcom.sun.management.jmxremote.rmi.port=1095"
+      JMX_PORT: 1095
+    volumes:
+      - /var/run/docker2.sock:/var/run/docker.sock
+
   jmx-exporter:
     image: sscaling/jmx-prometheus-exporter
     container_name: jmx-exporter
