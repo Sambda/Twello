@@ -29,18 +29,29 @@ class consumer_thread(threading.Thread):
         self.consumer = create_consumer(topic_name, group_id)
 
     def run(self):
-        print("Starting Name: {} Group_id: {}".format(self.name, self.group_id))
-        consume(self.consumer)
-        print("Exiting: " + self.name)
+        try:
+            while True:
+                msg = self.consumer.poll(0.01, 10)
+                if not msg:
+                    continue
+                else:
+                    self.consume(self.consumer)
+
+        except KeyboardInterrupt:
+            print("Detected Keyboard Interrupt. Cancelling.")
+            pass
+
+        finally:
+            self.consumer.close()
 
 
-def consume(cons):
-    for msg in cons:
-        record = json.loads(msg.value)
-        sleep(rdm.random())
+    def consume(self, cons):
+        for msg in cons:
+            print("Success")
+            sleep(rdm.random())
 
-    if cons is not None:
-        cons.close()
+        if cons is not None:
+            cons.close()
 
 
 if __name__ == '__main__':
