@@ -1,5 +1,5 @@
 from kafka import KafkaProducer, KafkaAdminClient
-from kafka.admin import NewTopic
+from kafka.admin import NewTopic, NewPartitions
 import tweepy
 from tweepy import OAuthHandler
 from tweepy import Stream
@@ -28,21 +28,12 @@ class KafkaPushListener(StreamListener):
         self.producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
 
     def on_data(self, data):
-        # Producer produces data for consumer
-        # Data comes from Twitter
 
-        # Parse Data into JSON
-        # data_json = json.loads(data.encode('utf-8'))
-
-        # Pretty print tweet on console
-        # print(json.dumps(data_json['text'], indent=4, sort_keys=True))
-        # print(json.dumps(data_json['entities']['hashtags'], indent=4, sort_keys=True))
-
-        #send_topics = determinate_topic(data)
+        send_topics = determinate_topic(data)
 
         # Send data to topic
-        #for send_topic in send_topics:
-        self.producer.send("topic_" + topic + "_partitions_" + num_partitions + "_replicas_" + num_replica, data.encode('utf-8'))
+        for topic in send_topics:
+            self.producer.send("topic_" + topic, data.encode('utf-8'))
 
         handle_metrics(self.producer.metrics(), topics)
         return True
@@ -79,22 +70,24 @@ if __name__ == '__main__':
     producer_keywords = input("Enter Keywords to Track in Twitter API - those Keywords are the created topics (seperated by ','): ")
     topics = re.sub("[^a-zA-Z,1-9]+", "", str(producer_keywords)).lower().split(",")
     keywords = producer_keywords.lower().replace(" ", "").split(",")
-    #Input number of partitions
+
+
+    #Input number of partitionsand replicas
     num_partitions = input("Put in the number of partitions per topic:")
     num_replica = input("Put in the number of replicas per topic:")
-    # TODO only letters in topic
+
     print('search for Keywords: ', keywords)
     topic_list = []
     topic_partitions = {}
     topics_existing = kafka_admin.list_topics()
     for topic in topics:
-        if "topic_"+topic not in topics_existing:
-            topic_list.append(NewTopic(name="topic_" + topic + "_partitions_" + num_partitions + "_replicas_" + num_replica, num_partitions=int(num_partitions), replication_factor=int(num_replica)))
-        #else:
-           # partitions = NewPartitions(total_count=int(num_partitions))
-            #topic_partitions["topic_"+topic] = partitions
+        if "topic_" + topic not in topics_existing:
+            topic_list.append(NewTopic(name="topic_" + topic, num_partitions=int(num_partitions), replication_factor=int(num_replica)))
+        else:
+            partitions = NewPartitions(total_count=int(num_partitions))
+            topic_partitions["topic_"+topic] = partitions
     kafka_admin.create_topics(new_topics=topic_list, validate_only=False)
-    #kafka_admin.create_partitions(topic_partitions)
+    kafka_admin.create_partitions(topic_partitions)
     # TWITTER API AUTH
     auth = OAuthHandler(api_key, api_secret)
     auth.set_access_token(access_token, access_token_secret)
@@ -104,4 +97,4 @@ if __name__ == '__main__':
     twitter_stream = Stream(auth, KafkaPushListener())
 
     # Filter the Twitter stream
-    twitter_stream.filter(locations=[-180,-90,180,90])
+    twitter_stream.filter(track=keywords)

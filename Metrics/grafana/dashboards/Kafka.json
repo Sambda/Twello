@@ -100,7 +100,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "kafka_controller_KafkaController_ActiveControllerCount",
+          "expr": "sum(kafka_controller_KafkaController_ActiveControllerCount)",
           "instant": false,
           "intervalFactor": 1,
           "legendFormat": "",
@@ -186,7 +186,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "kafka_controller_KafkaController_OfflinePartitionsCount",
+          "expr": "sum(kafka_controller_KafkaController_OfflinePartitionsCount)",
           "refId": "A"
         }
       ],
@@ -269,7 +269,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "increase(kafka_server_BrokerTopicMetrics_FailedProduceRequests_total[1h])",
+          "expr": "sum(increase(kafka_server_BrokerTopicMetrics_FailedProduceRequests_total[1h]))",
           "refId": "A"
         }
       ],
@@ -339,7 +339,7 @@
       "pluginVersion": "6.5.1",
       "targets": [
         {
-          "expr": "kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.75\", request=\"FetchConsumer\"}",
+          "expr": "avg(kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.75\", request=\"FetchConsumer\"})",
           "format": "time_series",
           "legendFormat": "Produce Reqeust",
           "refId": "B"
@@ -394,13 +394,13 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(kafka_server_BrokerTopicMetrics_BytesIn_total{topic!=\"\"}[1m])/1000000",
+          "expr": "sum by (topic) (increase(kafka_server_BrokerTopicMetrics_BytesIn_total{topic!=\"\"}[1m])/1000000)",
           "instant": false,
           "legendFormat": "Total Megabyte In {{topic}}",
           "refId": "A"
         },
         {
-          "expr": "increase(kafka_server_BrokerTopicMetrics_BytesOut_total{topic!=\"\"}[1m])/1000000",
+          "expr": "sum by (topic) (increase(kafka_server_BrokerTopicMetrics_BytesOut_total{topic!=\"\"}[1m])/1000000)",
           "legendFormat": "Total Megabyte Out {{topic}}",
           "refId": "B"
         }
@@ -472,7 +472,7 @@
                 "value": "null"
               }
             ],
-            "max": 100,
+            "max": 1000,
             "min": 0,
             "nullValueMode": "connected",
             "thresholds": [
@@ -482,7 +482,7 @@
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 900
               }
             ],
             "unit": "ms"
@@ -497,7 +497,7 @@
       "pluginVersion": "6.5.1",
       "targets": [
         {
-          "expr": "kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.95\", request=\"FetchFollower\"}",
+          "expr": "avg(kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.95\", request=\"FetchFollower\"})",
           "format": "time_series",
           "legendFormat": "Produce Reqeust",
           "refId": "B"
@@ -559,7 +559,7 @@
       "pluginVersion": "6.5.1",
       "targets": [
         {
-          "expr": "kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.95\", request=\"Produce\"}",
+          "expr": "avg(kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.95\", request=\"Produce\"})",
           "format": "time_series",
           "legendFormat": "Produce Reqeust",
           "refId": "B"
@@ -611,17 +611,17 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "increase(kafka_network_RequestMetrics_Requests_total{request=\"Produce\"}[1m])",
+          "expr": "sum by (request)(increase(kafka_network_RequestMetrics_Requests_total{request=\"Produce\"}[1m]))",
           "legendFormat": "Produce",
           "refId": "A"
         },
         {
-          "expr": "increase(kafka_network_RequestMetrics_Requests_total{request=\"FetchConsumer\"}[1m])",
+          "expr": "sum by (request)(increase(kafka_network_RequestMetrics_Requests_total{request=\"FetchConsumer\"}[1m]))",
           "legendFormat": "Fetch Consumer",
           "refId": "B"
         },
         {
-          "expr": "increase(kafka_network_RequestMetrics_Requests_total{request=\"FetchFollower\"}[1m])",
+          "expr": "sum by (request)(increase(kafka_network_RequestMetrics_Requests_total{request=\"FetchFollower\"}[1m]))",
           "legendFormat": "Fetch Follower",
           "refId": "C"
         }
@@ -689,7 +689,7 @@
         "current": true,
         "max": false,
         "min": false,
-        "rightSide": false,
+        "rightSide": true,
         "show": true,
         "sideWidth": 420,
         "total": false,
@@ -782,6 +782,7 @@
         "current": true,
         "max": false,
         "min": false,
+        "rightSide": true,
         "show": true,
         "total": false,
         "values": true
@@ -803,7 +804,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (topic)(kafka_topic_partition_replicas{topic!=\"__consumer_offsets\"})",
+          "expr": "sum by (topic)(kafka_topic_partition_replicas{topic!=\"__consumer_offsets\"}) ",
           "format": "time_series",
           "legendFormat": "{{topic}}",
           "refId": "A"
@@ -813,7 +814,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Replicas per topic",
+      "title": "Replicted partitions per topic",
       "tooltip": {
         "shared": false,
         "sort": 0,
@@ -1000,6 +1001,7 @@
       "targets": [
         {
           "expr": "request_latency_avg{instance=\"host.docker.internal:8000\", job=\"kafka-producer\"}",
+          "legendFormat": "Twitter Producer",
           "refId": "A"
         }
       ],
@@ -1087,6 +1089,7 @@
       "targets": [
         {
           "expr": "batch_size_avg{instance=\"host.docker.internal:8000\", job=\"kafka-producer\"}",
+          "legendFormat": "Twitter Producer",
           "refId": "A"
         }
       ],
@@ -1174,6 +1177,7 @@
       "targets": [
         {
           "expr": "batch_size_max{instance=\"host.docker.internal:8000\", job=\"kafka-producer\"}",
+          "legendFormat": "Twitter Producer",
           "refId": "A"
         }
       ],
@@ -1278,8 +1282,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (topic) (kafka_consumergroup_lag)",
-          "legendFormat": "Group: {{consumergroup}}",
+          "expr": "sum by (consumergroup) (kafka_consumergroup_lag)",
+          "legendFormat": "{{consumergroup}} ",
           "refId": "A"
         }
       ],
@@ -1325,7 +1329,7 @@
       }
     }
   ],
-  "refresh": "5s",
+  "refresh": false,
   "schemaVersion": 21,
   "style": "dark",
   "tags": [],
@@ -1333,8 +1337,8 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
-    "to": "now"
+    "from": "2021-05-04T15:25:03.526Z",
+    "to": "2021-05-04T15:32:01.411Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -1353,5 +1357,5 @@
   "timezone": "",
   "title": "Kafka",
   "uid": "y_udq2rGz",
-  "version": 2
+  "version": 8
 }

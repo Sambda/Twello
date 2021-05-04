@@ -101,6 +101,54 @@ services:
     volumes:
       - /var/run/docker2.sock:/var/run/docker.sock
 
+  jmx-exporter2:
+    image: sscaling/jmx-prometheus-exporter
+    container_name: jmx-exporter2
+    ports:
+      - "5557:5557"
+    depends_on:
+      - kafka
+    volumes:
+      - ./jmx-exporter/config2.yml:/opt/jmx_exporter/config.yml
+    environment:
+      SERVICE_PORT: 5557
+
+  jmx-exporter3:
+    image: sscaling/jmx-prometheus-exporter
+    container_name: jmx-exporter3
+    ports:
+      - "5558:5558"
+    depends_on:
+      - kafka
+    volumes:
+      - ./jmx-exporter/config3.yml:/opt/jmx_exporter/config.yml
+    environment:
+      SERVICE_PORT: 5558
+
+  jmx-exporter4:
+    image: sscaling/jmx-prometheus-exporter
+    container_name: jmx-exporter4
+    ports:
+      - "5559:5559"
+    depends_on:
+      - kafka
+    volumes:
+      - ./jmx-exporter/config4.yml:/opt/jmx_exporter/config.yml
+    environment:
+      SERVICE_PORT: 5559
+
+  jmx-exporter5:
+    image: sscaling/jmx-prometheus-exporter
+    container_name: jmx-exporter5
+    ports:
+      - "5560:5560"
+    depends_on:
+      - kafka
+    volumes:
+      - ./jmx-exporter/config5.yml:/opt/jmx_exporter/config.yml
+    environment:
+      SERVICE_PORT: 5560
+
   jmx-exporter:
     image: sscaling/jmx-prometheus-exporter
     container_name: jmx-exporter

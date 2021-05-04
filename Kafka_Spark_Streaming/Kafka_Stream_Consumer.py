@@ -16,7 +16,7 @@ def create_consumer_group(topic_name, number_of_consumers):
 
 def create_consumer(topic_name, group_id):
     return KafkaConsumer(topic_name, auto_offset_reset='earliest', group_id=group_id,
-                         bootstrap_servers=['localhost:9092'], api_version=(0, 10), consumer_timeout_ms=10000)
+                         bootstrap_servers=['localhost:9092'], api_version=(0, 10), consumer_timeout_ms=1000)
 
 
 class consumer_thread(threading.Thread):
@@ -37,7 +37,6 @@ class consumer_thread(threading.Thread):
 def consume(cons):
     for msg in cons:
         record = json.loads(msg.value)
-        print(json.dumps(record, indent=4, sort_keys=True))
         sleep(rdm.random())
 
     if cons is not None:
