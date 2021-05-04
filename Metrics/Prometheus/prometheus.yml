@@ -1,7 +1,7 @@
 # global config
 global:
-  scrape_interval:     2s
-  evaluation_interval: 2s
+  scrape_interval:     5s
+  evaluation_interval: 5s
 
 # A scrape configuration containing exactly one endpoint to scrape:
 scrape_configs:
@@ -10,7 +10,6 @@ scrape_configs:
     static_configs:
       - targets: ['host.docker.internal:8000']
   - job_name: kafka-cluster
-    metrics_path: ''
     static_configs:
       - targets:
         - 'host.docker.internal:5556'

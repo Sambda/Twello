@@ -314,7 +314,7 @@
                 "value": "null"
               }
             ],
-            "max": 100,
+            "max": 1000,
             "min": 0,
             "nullValueMode": "connected",
             "thresholds": [
@@ -324,7 +324,7 @@
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 900
               }
             ],
             "unit": "ms"
@@ -339,7 +339,7 @@
       "pluginVersion": "6.5.1",
       "targets": [
         {
-          "expr": "kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.95\", request=\"FetchConsumer\"}",
+          "expr": "kafka_network_RequestMetrics_TotalTimeMs{quantile=\"0.75\", request=\"FetchConsumer\"}",
           "format": "time_series",
           "legendFormat": "Produce Reqeust",
           "refId": "B"
@@ -803,7 +803,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kafka_topic_partition_replicas{topic!=\"__consumer_offsets\"}",
+          "expr": "sum by (topic)(kafka_topic_partition_replicas{topic!=\"__consumer_offsets\"})",
           "format": "time_series",
           "legendFormat": "{{topic}}",
           "refId": "A"
@@ -912,6 +912,7 @@
       "targets": [
         {
           "expr": "sum(delta(kafka_topic_partition_current_offset[5m])/5)",
+          "legendFormat": "Message in per minute",
           "refId": "A"
         }
       ],
@@ -1277,8 +1278,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kafka_consumergroup_lag",
-          "legendFormat": "Group: {{consumergroup}}, Partition: {{partition}}",
+          "expr": "sum by (topic) (kafka_consumergroup_lag)",
+          "legendFormat": "Group: {{consumergroup}}",
           "refId": "A"
         }
       ],
