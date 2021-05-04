@@ -1,15 +1,9 @@
 from kafka import KafkaConsumer
-from prometheus_client import start_http_server, Counter, Gauge
 import json
 import threading
 import random as rdm
 from time import sleep
 
-consumer_counter = Counter("consume_counter", "Counts all received Tweets of this consumer-group", ['topic'])
-records_lag_max_gauge = Gauge("records_lag_max", "records_lag_max", ['topic'])
-bytes_consumed_rate_gauge = Gauge("bytes_consumed_rate", "bytes_consumed_rate", ['topic'])
-fetch_rate_gauge = Gauge("fetch_rate", "fetch_rate", ['topic'])
-records_consumed_rate_gauge = Gauge("records_consumed_rate", "records_consumed_rate", ['topic'])
 
 
 def create_consumer_group(topic_name, number_of_consumers):
@@ -23,7 +17,7 @@ def create_consumer_group(topic_name, number_of_consumers):
 def create_consumer(topic_name, group_id):
     parsed_topic_name = 'topic_' + topic_name
     return KafkaConsumer(parsed_topic_name, auto_offset_reset='earliest', group_id=group_id,
-                         bootstrap_servers=['localhost:9092'], api_version=(0, 10), consumer_timeout_ms=1000)
+                         bootstrap_servers=['localhost:9092'], api_version=(0, 10), consumer_timeout_ms=10000)
 
 
 class consumer_thread(threading.Thread):
@@ -42,22 +36,17 @@ class consumer_thread(threading.Thread):
 
 
 def consume(cons, topic, id):
+    avg_len = 0
+    msg_consumed = 0
     for msg in cons:
-        print(str(id) + "_consumed_" + topic)
+        '''msg_consumed = msg_consumed + 1
         record = json.loads(msg.value)
-        handle_metrics(cons.metrics(), topic)
-        sleep(rdm.random())
+        msg_length = len(record['text'])
+        avg_len = (avg_len + msg_length) / msg_consumed
+        sleep(rdm.random())'''
 
     if cons is not None:
         cons.close()
-
-
-def handle_metrics(metrics, topic):
-    records_lag_max_gauge.labels(topic).set(metrics["consumer-fetch-manager-metrics"]["records-lag-max"])
-    bytes_consumed_rate_gauge.labels(topic).set(metrics["consumer-fetch-manager-metrics"]["bytes-consumed-rate"])
-    records_consumed_rate_gauge.labels(topic).set(metrics["consumer-fetch-manager-metrics"]["records-consumed-rate"])
-    fetch_rate_gauge.labels(topic).set(metrics["consumer-fetch-manager-metrics"]["fetch-rate"])
-    consumer_counter.labels(topic).inc()
 
 
 if __name__ == '__main__':
@@ -68,7 +57,6 @@ if __name__ == '__main__':
 
     consumer_per_topic = int(input("Enter a number of consumers per topic (Defines the consumer group size: "))
 
-    start_http_server(8001)
     consumer_groups = {topic_name: create_consumer_group(topic_name, consumer_per_topic) for topic_name in topic_names}
 
     # Start Consumer Threads

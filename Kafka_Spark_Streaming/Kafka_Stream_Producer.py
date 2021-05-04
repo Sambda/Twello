@@ -6,8 +6,6 @@ from tweepy import Stream
 import re
 from tweepy.streaming import StreamListener
 from prometheus_client import start_http_server, Counter, Gauge
-from kafka.admin.new_partitions import NewPartitions
-
 
 # TWITTER API CONFIGURATIONS
 access_token = "1380977247067209728-zjUF158nYIUPQVzMgTLwBJvHUpOwTW"
@@ -40,11 +38,11 @@ class KafkaPushListener(StreamListener):
         # print(json.dumps(data_json['text'], indent=4, sort_keys=True))
         # print(json.dumps(data_json['entities']['hashtags'], indent=4, sort_keys=True))
 
-        send_topics = determinate_topic(data)
+        #send_topics = determinate_topic(data)
 
         # Send data to topic
-        for send_topic in send_topics:
-            self.producer.send("topic_" + send_topic, data.encode('utf-8'))
+        #for send_topic in send_topics:
+        self.producer.send("topic_all_" + num_partitions + "_" + num_replica, data.encode('utf-8'))
 
         handle_metrics(self.producer.metrics(), topics)
         return True
@@ -84,6 +82,7 @@ if __name__ == '__main__':
     keywords = producer_keywords.lower().replace(" ", "").split(",")
     #Input number of partitions
     num_partitions = input("Put in the number of partitions per topic:")
+    num_replica = input("Put in the number of replicas per topic:")
     # TODO only letters in topic
     print('search for Keywords: ', keywords)
     topic_list = []
@@ -91,10 +90,10 @@ if __name__ == '__main__':
     topics_existing = kafka_admin.list_topics()
     for topic in topics:
         if "topic_"+topic not in topics_existing:
-            topic_list.append(NewTopic(name="topic_" + topic, num_partitions=int(num_partitions), replication_factor=2))
-        else:
-            partitions = NewPartitions(total_count=int(num_partitions))
-            topic_partitions["topic_"+topic] = partitions
+            topic_list.append(NewTopic(name="topic_all_" + num_partitions + "_" + num_replica + topic, num_partitions=int(num_partitions), replication_factor=int(num_replica)))
+        #else:
+           # partitions = NewPartitions(total_count=int(num_partitions))
+            #topic_partitions["topic_"+topic] = partitions
 
     kafka_admin.create_topics(new_topics=topic_list, validate_only=False)
     kafka_admin.create_partitions(topic_partitions)
@@ -107,4 +106,4 @@ if __name__ == '__main__':
     twitter_stream = Stream(auth, KafkaPushListener())
 
     # Filter the Twitter stream
-    twitter_stream.filter(track=keywords)
+    twitter_stream.filter(locations=[-180,-90,180,90])
