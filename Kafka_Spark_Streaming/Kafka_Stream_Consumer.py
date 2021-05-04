@@ -15,7 +15,7 @@ def create_consumer_group(topic_name, number_of_consumers):
 
 
 def create_consumer(topic_name, group_id):
-    return KafkaConsumer(topic_name, auto_offset_reset='earliest', group_id=group_id,
+    return KafkaConsumer(topic_name, auto_offset_reset='earliest',
                          bootstrap_servers=['localhost:9092'], api_version=(0, 10), consumer_timeout_ms=1000)
 
 
@@ -35,7 +35,7 @@ class consumer_thread(threading.Thread):
                 if not msg:
                     continue
                 else:
-                    self.consume(self.consumer)
+                    self.consume(msg)
 
         except KeyboardInterrupt:
             print("Detected Keyboard Interrupt. Cancelling.")
@@ -45,13 +45,9 @@ class consumer_thread(threading.Thread):
             self.consumer.close()
 
 
-    def consume(self, cons):
-        for msg in cons:
-            print("Success")
-            sleep(rdm.random())
-
-        if cons is not None:
-            cons.close()
+    def consume(self, msg):
+        sleep(rdm.random() * 5)
+        print("Consumed")
 
 
 if __name__ == '__main__':
