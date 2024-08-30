@@ -5,10 +5,10 @@ import socket
 import json
 
 # TWITTER API CONFIGURATIONS
-access_token = "1380977247067209728-zjUF158nYIUPQVzMgTLwBJvHUpOwTW"
-access_token_secret = "toLJYQRur9fU3va7eNrLrSw6xY3t9JZV7YLAhzby4gGCn"
-api_key ="2uKUCZgWqrLZFr0nGC4kw4ven"
-api_secret ="Gk17pGWblSkAB4N57abSCY70LB3IXUcenNEJWPadKhMkIGkP2w"
+access_token = ""
+access_token_secret = ""
+api_key =""
+api_secret =""
 
 
 # tweet object listens for the tweets
